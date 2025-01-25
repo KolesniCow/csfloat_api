@@ -61,7 +61,7 @@ class CSFloatAPI:
             params={k: v for k, v in params.items() if v is not None},
         )
         response.raise_for_status()
-        data = response.json()
+        data = response.json()['data']
 
         # Проверяем, что ответ является списком
         if not isinstance(data, list):
