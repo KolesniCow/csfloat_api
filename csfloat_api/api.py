@@ -7,9 +7,10 @@ from csfloat_api.enums import SortBy, Category
 class CSFloatAPI:
     BASE_URL = "https://csfloat.com/api/v1"
 
-    def __init__(self, api_key: str):
+    def __init__(self, api_key: str, proxies: Optional[Dict[str, str]] = None):
         self.api_key = api_key
         self.headers = {"Authorization": api_key}
+        self.proxies = proxies
 
     def get_listings(
             self,
@@ -59,6 +60,7 @@ class CSFloatAPI:
             f"{self.BASE_URL}/listings",
             headers=self.headers,
             params={k: v for k, v in params.items() if v is not None},
+            proxies=self.proxies
         )
         response.raise_for_status()
         data = response.json()['data']
@@ -84,7 +86,8 @@ class CSFloatAPI:
         response = requests.post(
             f"{self.BASE_URL}/listings/buy",
             headers=self.headers,
-            json=data
+            json=data,
+            proxies=self.proxies
         )
         response.raise_for_status()
         return response.json()
