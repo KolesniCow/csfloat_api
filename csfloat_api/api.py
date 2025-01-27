@@ -1,5 +1,5 @@
 import requests
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 from csfloat_api.dataclasses import Listing
 from csfloat_api.enums import SortBy, Category
 
@@ -68,4 +68,24 @@ class CSFloatAPI:
             raise ValueError(f"Unexpected response format: {data}")
 
         return [Listing.from_dict(item) for item in data]
+
+    def buy_listings(self, total_price: int, contract_ids: List[str]) -> Dict[str, Any]:
+        """
+        Покупка листингов на CSFloat Market.
+
+        :param total_price: Общая цена покупки.
+        :param contract_ids: Список идентификаторов контрактов для покупки.
+        :return: Ответ от сервера в формате JSON.
+        """
+        data = {
+            "total_price": total_price,
+            "contract_ids": contract_ids
+        }
+        response = requests.post(
+            f"{self.BASE_URL}/listings/buy",
+            headers=self.headers,
+            json=data
+        )
+        response.raise_for_status()
+        return response.json()
 
