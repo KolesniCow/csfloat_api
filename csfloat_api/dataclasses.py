@@ -13,7 +13,6 @@ class Sticker:
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "Sticker":
-        print(data)
         return cls(
             sticker_id=data.get("stickerId"),
             slot=data.get("slot"),
