@@ -31,6 +31,7 @@ class CSFloatAPI:
             market_hash_name: Optional[str] = None,
             item_type: Optional[str] = None,
             stickers: Optional[str] = None,
+            show_response: Optional[bool] = False
     ) -> List[Listing]:
         """
         Получение всех активных объявлений на CSFloat Market.
@@ -69,9 +70,13 @@ class CSFloatAPI:
         if not isinstance(data, list):
             raise ValueError(f"Unexpected response format: {data}")
 
+        if show_response:
+            print(data)
+
         return [Listing.from_dict(item) for item in data]
 
-    def buy_listings(self, total_price: int, contract_ids: List[str]) -> Dict[str, Any]:
+    def buy_listings(self, total_price: int, contract_ids: List[str],
+                     show_response: Optional[bool] = False) -> Dict[str, Any]:
         """
         Покупка листингов на CSFloat Market.
 
@@ -90,5 +95,8 @@ class CSFloatAPI:
             proxies=self.proxies
         )
         response.raise_for_status()
-        return response.json()
+        data = response.json()
+        if show_response:
+            print(data)
+        return data
 
