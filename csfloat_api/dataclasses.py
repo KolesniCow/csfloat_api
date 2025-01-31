@@ -8,9 +8,8 @@ class Sticker:
     slot: int
     icon_url: str
     name: str
-    scm: dict
-    scm_price: Optional[int]
-    scm_volume: Optional[int]
+    price: Optional[int]
+    quantity: Optional[int]
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "Sticker":
@@ -20,9 +19,8 @@ class Sticker:
             slot=data.get("slot"),
             icon_url=data.get("icon_url"),
             name=data.get("name"),
-            scm=data.get('scm', {}),
-            scm_price=data.get("scm", {}).get("price"),
-            scm_volume=data.get("scm", {}).get("volume")
+            price=data.get("reference", {}).get("price"),
+            quantity=data.get("reference", {}).get("quantity")
         )
 
 @dataclass
