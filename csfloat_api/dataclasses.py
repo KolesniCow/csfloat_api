@@ -26,12 +26,12 @@ class Listing:
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "Listing":
         stickers = []
-        stickers_data = data['item'].get('stickers', [])
+        stickers_data = data.get('stickers', [])
         for sticker_data in stickers_data:
             sticker = Sticker(
                 name=sticker_data.get("name", "Unknown"),
                 market_hash_name=sticker_data.get("market_hash_name"),
-                price=sticker_data['scm'].get('price', 0)
+                price=sticker_data.get("price", 0)
             )
             stickers.append(sticker)
 
