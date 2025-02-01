@@ -7,7 +7,8 @@ from csfloat_api.enums import SortBy, Category
 class CSFloatAPI:
     BASE_URL = "https://csfloat.com/api/v1"
 
-    def __init__(self, api_key: str, proxy: Optional[Union[str, Dict[str, str]]] = None):
+    def __init__(self, api_key: str, proxy: Optional[Union[str, Dict[str, str]]] = None,
+                 session: Optional[requests.Session] = None):
         """
         Инициализация API клиента.
 
@@ -20,7 +21,7 @@ class CSFloatAPI:
         self.proxy = proxy
 
         # Создаем сессию с поддержкой прокси
-        self.session = requests.Session()
+        self.session = session or requests.Session()
         if self.proxy:
             self.session.proxies.update(self._format_proxy(self.proxy))
 

@@ -1,6 +1,6 @@
 [project]
 name = "csfloat-api"
-version = "0.2.0"
+version = "0.2.1"
 description = ""
 authors = [
     {name = "Your Name",email = "you@example.com"}
