@@ -1,5 +1,5 @@
 import requests
-from typing import List, Optional, Dict, Any
+from typing import List, Optional, Dict, Any, Union
 from csfloat_api.dataclasses import Listing
 from csfloat_api.enums import SortBy, Category
 
@@ -7,10 +7,34 @@ from csfloat_api.enums import SortBy, Category
 class CSFloatAPI:
     BASE_URL = "https://csfloat.com/api/v1"
 
-    def __init__(self, api_key: str, proxies: Optional[Dict[str, str]] = None):
+    def __init__(self, api_key: str, proxy: Optional[Union[str, Dict[str, str]]] = None):
+        """
+        Инициализация API клиента.
+
+        :param api_key: API ключ для авторизации.
+        :param proxy: Прокси в виде строки (например, "http://user:pass@host:port")
+                     или словаря (например, {"http": "http://host:port", "https": "https://host:port"}).
+        """
         self.api_key = api_key
         self.headers = {"Authorization": api_key}
-        self.proxies = proxies
+        self.proxy = proxy
+
+        # Создаем сессию с поддержкой прокси
+        self.session = requests.Session()
+        if self.proxy:
+            self.session.proxies.update(self._format_proxy(self.proxy))
+
+    @staticmethod
+    def _format_proxy(proxy: Union[str, Dict[str, str]]) -> Dict[str, str]:
+        """
+        Форматирует прокси в словарь, если передана строка.
+
+        :param proxy: Прокси в виде строки или словаря.
+        :return: Прокси в формате словаря.
+        """
+        if isinstance(proxy, str):
+            return {"http": proxy, "https": proxy}
+        return proxy
 
     def get_listings(
             self,
@@ -57,16 +81,14 @@ class CSFloatAPI:
             "type": item_type,
             "stickers": stickers,
         }
-        response = requests.get(
+        response = self.session.get(
             f"{self.BASE_URL}/listings",
             headers=self.headers,
-            params={k: v for k, v in params.items() if v is not None},
-            proxies=self.proxies
+            params={k: v for k, v in params.items() if v is not None}
         )
         response.raise_for_status()
         data = response.json()['data']
 
-        # Проверяем, что ответ является списком
         if not isinstance(data, list):
             raise ValueError(f"Unexpected response format: {data}")
 
@@ -82,21 +104,20 @@ class CSFloatAPI:
 
         :param total_price: Общая цена покупки.
         :param contract_ids: Список идентификаторов контрактов для покупки.
+        :param show_response: Показать ответ сервера если True
         :return: Ответ от сервера в формате JSON.
         """
         data = {
             "total_price": total_price,
             "contract_ids": contract_ids
         }
-        response = requests.post(
+        response = self.session.post(
             f"{self.BASE_URL}/listings/buy",
             headers=self.headers,
-            json=data,
-            proxies=self.proxies
+            json=data
         )
         response.raise_for_status()
         data = response.json()
         if show_response:
             print(data)
         return data
-
