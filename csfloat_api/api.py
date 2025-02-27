@@ -122,3 +122,9 @@ class CSFloatAPI:
         if show_response:
             print(data)
         return data
+
+    def get_history(self, hash_name: str):
+        link = f'{self.BASE_URL}/history/{hash_name}/graph'
+        response = self.session.get(link)
+        response.raise_for_status()
+        return response.json()
