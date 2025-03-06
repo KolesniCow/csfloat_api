@@ -128,3 +128,9 @@ class CSFloatAPI:
         response = self.session.get(link)
         response.raise_for_status()
         return response.json()
+    
+    def get_profile_info(self):
+        link = f'{self.BASE_URL}/me'
+        response = self.session.get(link)
+        response.raise_for_status()
+        return response.json()
